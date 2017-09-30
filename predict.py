@@ -1,16 +1,6 @@
-# if you are on 32 bit os
-# import Image
-import resizeimage
-# 64 bit with pillow:
-from PIL import Image
 import numpy as np
-from os import listdir
-from os.path import isfile, join
-import matplotlib.pyplot as plt
 import os
-import camera
-from keras.models import Sequential
-from keras.layers import Dense
+import cv2
 from keras.models import model_from_json
 import pickle
 
@@ -31,34 +21,22 @@ loaded_model = model_from_json(loaded_model_json)
 loaded_model.load_weights("model_face.h5")
 print("Loaded model from disk")
 
-while True:
-
- try:
-  image=np.array([camera.get_image()])
-  image = image.astype('float32')
-  image = image / 255.0
-
-  prediction=loaded_model.predict(image)
-
-  print(prediction)
-
-  print(np.max(prediction))
-
-  if(np.max(prediction)>0.7):
-
-     print(int_to_word_out[np.argmax(prediction)])
-
-  else:
-
-     print("face_not_found")
 
 
- except resizeimage.imageexceptions.ImageSizeError:
-   print("1")
+image=np.array([cv2.imread(os.listdir("predict"))])
+image = image.astype('float32')
+image = image / 255.0
+
+prediction=loaded_model.predict(image)
+
+print(prediction)
+
+print(np.max(prediction))
+
+print(int_to_word_out[np.argmax(prediction)])
 
 
- except KeyboardInterrupt:
-  exit()
+
 
 
 

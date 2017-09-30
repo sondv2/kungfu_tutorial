@@ -5,7 +5,6 @@ import numpy as np
 import cv2
 import os
 
-import random
 
 label = os.listdir("dataset_image")
 dataset=[]
