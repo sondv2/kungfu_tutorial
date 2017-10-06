@@ -1,6 +1,7 @@
 import numpy as np
 import os
-import cv2
+from scipy import  misc
+
 from keras.models import model_from_json
 import pickle
 
@@ -23,7 +24,7 @@ print("Loaded model from disk")
 
 
 
-image=np.array([cv2.imread(os.listdir("predict"))])
+image=np.array([misc.imread(os.listdir("predict")[0])])
 image = image.astype('float32')
 image = image / 255.0
 

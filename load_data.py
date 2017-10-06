@@ -1,8 +1,9 @@
 
 import pickle
 from sklearn.model_selection import train_test_split
+from scipy import misc
 import numpy as np
-import cv2
+
 import os
 
 
@@ -13,8 +14,8 @@ for image_label in label:
     images = os.listdir("dataset_image/"+image_label)
 
     for image in images:
-        img = cv2.imread("dataset_image/"+image_label+"/"+image)
-        img = cv2.resize(img, (64, 64))
+        img = misc.imread("dataset_image/"+image_label+"/"+image)
+        img = misc.imresize(img, (64, 64))
         dataset.append((img,image_label))
 
 
