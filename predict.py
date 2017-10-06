@@ -1,7 +1,7 @@
 import numpy as np
 import os
 from scipy import  misc
-
+import cv2
 from keras.models import model_from_json
 import pickle
 
@@ -23,8 +23,10 @@ loaded_model.load_weights("model_face.h5")
 print("Loaded model from disk")
 
 
-
-image=np.array([misc.imread(os.listdir("predict")[0])])
+img=os.listdir("predict")[0]
+image=np.array(misc.imread("predict/"+img))
+image = misc.imresize(image, (64, 64))
+image=np.array([image])
 image = image.astype('float32')
 image = image / 255.0
 
