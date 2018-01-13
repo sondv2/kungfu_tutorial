@@ -6,7 +6,7 @@ import numpy as np
 import os
 import cv2
 
-
+#load dataset
 label = os.listdir("dataset_image")
 dataset=[]
 for image_label in label:
@@ -18,22 +18,18 @@ for image_label in label:
         img = misc.imresize(img, (64, 64))
         dataset.append((img,image_label))
 
-
-
 X=[]
 Y=[]
-
 for  input,image_label in dataset:
 
     X.append(input)
 
     Y.append(label.index(image_label))
 
-
 X=np.array(X)
 Y=np.array(Y)
 
-
+#split dataset 
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.20, random_state=7)
 
 
