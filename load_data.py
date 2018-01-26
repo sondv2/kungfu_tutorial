@@ -4,7 +4,6 @@ from sklearn.model_selection import train_test_split
 from scipy import misc
 import numpy as np
 import os
-import cv2
 
 #load dataset
 label = os.listdir("dataset_image")
