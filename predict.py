@@ -1,7 +1,6 @@
 import numpy as np
 import os
 from scipy import  misc
-import cv2
 from keras.models import model_from_json
 import pickle
 
