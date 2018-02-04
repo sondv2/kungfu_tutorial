@@ -1,4 +1,3 @@
-
 import pickle
 from sklearn.model_selection import train_test_split
 from scipy import misc
@@ -7,32 +6,32 @@ import os
 
 #load dataset
 label = os.listdir("dataset_image")
-dataset=[]
-for image_label in label:
 
-    images = os.listdir("dataset_image/"+image_label)
+def load_datasets():
 
-    for image in images:
-        img = misc.imread("dataset_image/"+image_label+"/"+image)
-        img = misc.imresize(img, (64, 64))
-        dataset.append((img,image_label))
+    dataset=[]
+    for image_label in label:
 
-X=[]
-Y=[]
-for  input,image_label in dataset:
+        images = os.listdir("dataset_image/"+image_label)
 
-    X.append(input)
+        for image in images:
+            img = misc.imread("dataset_image/"+image_label+"/"+image)
+            img = misc.imresize(img, (64, 64))
+            dataset.append((img,image_label))
 
-    Y.append(label.index(image_label))
+    X=[]
+    y=[]
+    for  input,image_label in dataset:
 
-X=np.array(X)
-Y=np.array(Y)
+        X.append(input)
 
-#split dataset 
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.20, random_state=7)
+        y.append(label.index(image_label))
+
+    X=np.array(X)
+    y=np.array(y)
 
 
-data_set=(X_train, X_test, y_train, y_test )
+    return X,y
 
 
 
