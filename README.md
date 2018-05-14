@@ -6,6 +6,9 @@ How to develop an Image Classifiier in keras using tensorflow backend.
 1. TensorFlow
 2. Keras
 
+### Dataset
+Download https://www.kaggle.com/c/dogs-vs-cats
+
 ### Training
 1. Run train.py
 
