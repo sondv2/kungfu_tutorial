@@ -1,7 +1,5 @@
 # Image Classification in Keras
 How to develop an Image Classifiier in keras using tensorflow backend.
-![alt text](https://patiliyo.com/wp-content/uploads/2017/10/kedi-kopek-dostluk-9.jpg)
-
 
 ## Getting Started
 ### Prerequisites
