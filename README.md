@@ -3,8 +3,8 @@ How to develop an Image Classifiier in keras using tensorflow backend.
 
 ## Getting Started
 ### Prerequisites
-TensorFlow
-Keras
+1. TensorFlow
+2. Keras
 
 ### Training
 1. Run train.py
@@ -32,7 +32,7 @@ def define_model(num_classes,epochs):
     sgd = SGD(lr=lrate, momentum=0.9, decay=decay, nesterov=False)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     print(model.summary())
-return model
+    return model
 ```
 
 ## License
