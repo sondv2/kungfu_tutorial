@@ -4,16 +4,12 @@ from scipy import misc
 import numpy as np
 import os
 
-#load dataset
-label = os.listdir("dataset_image")
-
+# Loading dataset
 def load_datasets():
-
+    
     dataset=[]
     for image_label in label:
-
         images = os.listdir("dataset_image/"+image_label)
-
         for image in images:
             img = misc.imread("dataset_image/"+image_label+"/"+image)
             img = misc.imresize(img, (64, 64))
@@ -22,19 +18,14 @@ def load_datasets():
     X=[]
     y=[]
     for  input,image_label in dataset:
-
         X.append(input)
-
         y.append(label.index(image_label))
-
     X=np.array(X)
     y=np.array(y)
-
-
     return X,y
 
-
-
+# Save int2word dict
+label = os.listdir("dataset_image")
 save_label = open("int_to_word_out.pickle","wb")
 pickle.dump(label, save_label)
 save_label.close()
