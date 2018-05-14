@@ -4,12 +4,13 @@ from scipy import  misc
 from keras.models import model_from_json
 import pickle
 
+# Loading int2word dict
 classifier_f = open("int_to_word_out.pickle", "rb")
 int_to_word_out = pickle.load(classifier_f)
 classifier_f.close()
 
 def load_model():
-
+    
     # load json and create model
     json_file = open('model_face.json', 'r')
     loaded_model_json = json_file.read()
@@ -21,6 +22,7 @@ def load_model():
     return loaded_model
 
 def pre_process(image):
+    
     image = image.astype('float32')
     image = image / 255.0
     return image
