@@ -10,7 +10,7 @@ How to develop an Image Classifiier in keras using tensorflow backend.
 1. Download https://www.kaggle.com/c/dogs-vs-cats
 ![alt text](http://adilmoujahid.com/images/cats-dogs.jpg)
 2. Create a folder named **"dataset_image"** in the root directory.
-3. Create two folders -  **"cat"** and **"dog"**.
+3. Create two folders -  **"cat"** and **"dog"** inside folder **"dataset_image"**.
 4. Put the downloaded images into the respective folders.
 
 ### Training
