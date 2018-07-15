@@ -7,19 +7,16 @@ import os
 # Loading dataset
 def load_datasets():
     
-    dataset=[]
+    X=[]
+    y=[]
     for image_label in label:
         images = os.listdir("dataset_image/"+image_label)
         for image in images:
             img = misc.imread("dataset_image/"+image_label+"/"+image)
             img = misc.imresize(img, (64, 64))
-            dataset.append((img,image_label))
-
-    X=[]
-    y=[]
-    for  input,image_label in dataset:
-        X.append(input)
-        y.append(label.index(image_label))
+            X.append(img)
+            y.append(label.index(image_label))
+ 
     X=np.array(X)
     y=np.array(y)
     return X,y
