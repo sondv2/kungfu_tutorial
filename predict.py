@@ -31,7 +31,7 @@ def load_image():
 
 
     img=os.listdir("images")[0]
-    image=np.array(misc.imread("predict/"+img))
+    image=np.array(misc.imread("images/"+img))
     image = misc.imresize(image, (64, 64))
     image=np.array([image])
     image=pre_process(image)
