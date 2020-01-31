@@ -178,14 +178,15 @@ def main():
     optimizer = build_optimizer(args.kf_optimizer)
 
     # load data
-    X_train, Y_train, x_val, y_val = load_data.load_datasets_v2()
+    X_train, Y_train, x_val, y_val = load_data.load_datasets_rgb()
 
     # pre process
     X_train = pre_process(X_train)
     x_val = pre_process(x_val)
 
     # one hot encode
-    # y, num_classes = one_hot_encode(y)
+    # Y_train, num_classes = one_hot_encode(Y_train)
+    # y_val, num_classes = one_hot_encode(y_val)
 
     # Convert class vectors to binary class matrices
     Y_train = keras.utils.to_categorical(Y_train, num_classes)

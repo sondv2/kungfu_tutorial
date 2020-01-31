@@ -30,19 +30,17 @@ def load_datasets(dataset='dataset_image/'):
 
     return X, y
 
-def load_datasets_v2(dataset='dataset_image/'):
+def load_datasets_rgb(dataset='dataset_image/'):
     X = []
     y = []
     label = os.listdir(dataset)
     for image_label in label:
         images = os.listdir(dataset + image_label)
-        for image in tqdm(images):
+        for image in tqdm(images[:100]):
             path = os.path.join(dataset + image_label + '/', image)
-            # img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
             img = cv2.imread(path)
             if img is not None:
                 img = cv2.resize(img, (img_width, img_height))
-                # img = img.flatten()
                 X.append(img)
                 y.append(label.index(image_label))
 
