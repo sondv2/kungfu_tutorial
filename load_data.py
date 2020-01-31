@@ -1,28 +1,30 @@
-import pickle
-from sklearn.model_selection import train_test_split
-from scipy import misc
 import numpy as np
 import os
+import os
+import numpy as np
+from tqdm import tqdm
+import cv2
 
+img_width = 64
+img_height = 64
 # Loading dataset
-def load_datasets():
-    
-    X=[]
-    y=[]
+def load_datasets(dataset='dataset_image/'):
+    X = []
+    y = []
+    label = os.listdir(dataset)
     for image_label in label:
-        images = os.listdir("dataset_image/"+image_label)
-        for image in images:
-            img = misc.imread("dataset_image/"+image_label+"/"+image)
-            img = misc.imresize(img, (64, 64))
-            X.append(img)
-            y.append(label.index(image_label))
- 
-    X=np.array(X)
-    y=np.array(y)
-    return X,y
+        images = os.listdir(dataset + image_label)
+        for image in tqdm(images):
+            path = os.path.join(dataset + image_label + '/', image)
+            img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+            # img = cv2.imread(path)
+            if img is not None:
+                img = cv2.resize(img, (img_width, img_height))
+                img = img.flatten()
+                X.append(img)
+                y.append(label.index(image_label))
 
-# Save int2word dict
-label = os.listdir("dataset_image")
-save_label = open("int_to_word_out.pickle","wb")
-pickle.dump(label, save_label)
-save_label.close()
+    X = np.asarray(X)
+    y = np.asarray(y)
+
+    return X, y
