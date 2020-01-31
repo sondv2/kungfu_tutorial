@@ -1,3 +1,4 @@
+from __future__ import print_function
 import argparse
 
 import numpy
@@ -5,10 +6,28 @@ import tensorflow as tf
 from keras.utils import np_utils
 from kungfu import current_cluster_size, current_rank
 from kungfu.tensorflow.initializer import BroadcastGlobalVariablesCallback
-from sklearn.model_selection import train_test_split
-
 import load_data
 
+import argparse
+import keras
+from keras.datasets import mnist
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Conv2D, MaxPooling2D
+from keras import backend as K
+import math
+import tensorflow as tf
+from kungfu import current_cluster_size, current_rank
+from kungfu.tensorflow.initializer import BroadcastGlobalVariablesCallback
+from kungfu.tensorflow.optimizers import (SynchronousAveragingOptimizer,
+                                          SynchronousSGDOptimizer,
+                                          PairAveragingOptimizer)
+
+
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+K.set_session(tf.Session(config=config))
+num_classes = 2
 # fix random seed for reproducibility
 seed = 7
 numpy.random.seed(seed)
@@ -17,7 +36,7 @@ numpy.random.seed(seed)
 def build_optimizer(name, n_shards=1):
     learning_rate = 0.1
 
-    # Scale learning rate according to the level of data parallelism
+    # KungFu: adjust learning rate based on number of GPUs.
     optimizer = tf.train.GradientDescentOptimizer(learning_rate * n_shards)
 
     # KUNGFU: Wrap the TensorFlow optimizer with KungFu distributed optimizers.
@@ -71,6 +90,25 @@ def define_model_v1(optimizer, num_classes):
     return model
 
 def define_model_v2(optimizer, num_classes):
+
+    # Create the model
+    model = Sequential()
+    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(load_data.img_width, load_data.img_height, 3)))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classes, activation='softmax'))
+
+    # Compile model
+    model.compile(loss=keras.losses.categorical_crossentropy, optimizer=optimizer, metrics=['accuracy'])
+    print(model.summary())
+    return model
+
+def define_model_v3(optimizer, num_classes):
+
     # Create the model
     model = Sequential()
     model.add(Conv2D(32, (3, 3), input_shape=(load_data.img_width, load_data.img_height, 3), padding='same', activation='relu', kernel_constraint=maxnorm(3)))
@@ -106,6 +144,7 @@ def parse_args():
 
 
 def train_model(model, x_train, y_train, x_val, y_val, n_epochs=1, batch_size=32):
+
     n_shards = current_cluster_size()
     shard_id = current_rank()
     train_data_size = len(x_train)
@@ -123,9 +162,12 @@ def train_model(model, x_train, y_train, x_val, y_val, n_epochs=1, batch_size=32
               y,
               batch_size=batch_size,
               epochs=n_epochs,
-              callbacks=[BroadcastGlobalVariablesCallback()],
+              callbacks=[BroadcastGlobalVariablesCallback(with_keras=True)],
               validation_data=(x_val, y_val),
-              verbose=2)
+              verbose=1)
+    score = model.evaluate(x_val, y_val, verbose=0)
+    print('Test loss:', score[0])
+    print('Test accuracy:', score[1])
 
 
 def main():
@@ -136,20 +178,21 @@ def main():
     optimizer = build_optimizer(args.kf_optimizer)
 
     # load data
-    X, y = load_data.load_datasets()
+    X_train, Y_train, x_val, y_val = load_data.load_datasets_v2()
 
     # pre process
-    X = pre_process(X)
+    X_train = pre_process(X_train)
+    x_val = pre_process(x_val)
 
     # one hot encode
     # y, num_classes = one_hot_encode(y)
-    num_classes = 2
+
+    # Convert class vectors to binary class matrices
+    Y_train = keras.utils.to_categorical(Y_train, num_classes)
+    y_val = keras.utils.to_categorical(y_val, num_classes)
 
     # build the Tensorflow model
-    model = define_model_v1(optimizer, num_classes)
-
-    # split dataset
-    X_train, x_val, Y_train, y_val = train_test_split(X, y, test_size=0.20, random_state=7)
+    model = define_model_v2(optimizer, num_classes)
 
     # train the Tensorflow model
     train_model(model, X_train, Y_train, x_val, y_val, args.n_epochs, args.batch_size)
