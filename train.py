@@ -164,7 +164,7 @@ def train_model(model, x_train, y_train, x_val, y_val, n_epochs=1, batch_size=32
               epochs=n_epochs,
               callbacks=[BroadcastGlobalVariablesCallback(with_keras=True)],
               validation_data=(x_val, y_val),
-              verbose=1)
+              verbose=2)
     score = model.evaluate(x_val, y_val, verbose=0)
     print('Test loss:', score[0])
     print('Test accuracy:', score[1])
